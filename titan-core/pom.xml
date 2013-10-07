@@ -17,7 +17,7 @@
             <artifactId>blueprints-core</artifactId>
             <version>${tinkerpop.version}</version>
         </dependency>
-        <dependency>
+				<!--        <dependency>
             <groupId>com.tinkerpop.gremlin</groupId>
             <artifactId>gremlin-groovy</artifactId>
             <version>${tinkerpop.version}</version>
@@ -43,7 +43,8 @@
             <groupId>com.tinkerpop.rexster</groupId>
             <artifactId>rexster-server</artifactId>
             <version>${tinkerpop.version}</version>
-        </dependency>
+				</dependency>
+				-->
         <!-- Utility -->
         <dependency>
             <groupId>com.spatial4j</groupId>

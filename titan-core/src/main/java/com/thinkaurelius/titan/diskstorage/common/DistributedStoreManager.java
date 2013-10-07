@@ -126,9 +126,18 @@ public abstract class DistributedStoreManager extends AbstractStoreManager {
                 endBytes[0] = (byte) ((s & 0x0000FF00) >> 8);
                 endBytes[1] = (byte) (s & 0x000000FF);
             } else {
-
-                endBytes =
-                        ManagementFactory.getRuntimeMXBean().getName().getBytes();
+            	// DLP: This simple hack works fine for non-Android devices but
+            	// doesn't on Android.  Rather than make a mock ManagementFactory and
+            	// using JarJar on this class (its the only one who uses ManagementFactory),
+            	// I will just comment it out (for now).  A reflection-based test would 
+            	// work best here.  See http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+            	// (Use the TelephonyManager version).  Note that it will need to be all reflection since
+            	// this is not initially compiled against android.jar.
+//                endBytes =
+//                        ManagementFactory.getRuntimeMXBean().getName().getBytes();
+            	endBytes = new byte[2];
+            	endBytes[0] = (byte)0xdd;
+            	endBytes[1] = (byte)0x55;		// dd55 => Deep Down 5tudio5
             }
 
             byte[] addrBytes;

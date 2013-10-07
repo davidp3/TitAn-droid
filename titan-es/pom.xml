@@ -9,18 +9,30 @@
     <artifactId>titan-es</artifactId>
     <name>Titan-ElasticSearch: Distributed Indexing Support</name>
     <url>http://thinkaurelius.github.com/titan/</url>
+
+    <repositories>
+        <repository>
+            <id>oracleReleases</id>
+            <name>Oracle Released Java Packages</name>
+            <url>http://download.oracle.com/maven</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+ 
     <dependencies>
+        <!-- TinkerPop -->
         <dependency>
             <groupId>com.thinkaurelius.titan</groupId>
             <artifactId>titan-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.thinkaurelius.titan</groupId>
-            <artifactId>titan-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>com.sleepycat</groupId>
+            <artifactId>je</artifactId>
+            <version>5.0.73</version>
         </dependency>
+	 
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
@@ -33,31 +45,7 @@
             -->
             <version>0.90.0</version>
         </dependency>
-    </dependencies>
-    <profiles>
-        <profile>
-            <id>comprehensive</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.12.1</version>
-                        <configuration>
-                            <argLine>-Xms256m -Xmx1024m</argLine>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
-                            <excludes>
-                                <exclude>**/Internal*.java</exclude>
-                                <exclude>**/*Suite.java</exclude>
-                            </excludes>
-                            <forkMode>always</forkMode>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+ 		</dependencies>
     <build>
         <directory>${basedir}/target</directory>
         <finalName>${project.artifactId}-${project.version}</finalName>
@@ -67,14 +55,27 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <testResources>
+				<!--        <testResources>
             <testResource>
-                <directory>${basedir}/src/test/resources</directory>
+                <directory>${basedir}/src/test/resources
+                </directory>
             </testResource>
-        </testResources>
+					</testResources> -->
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>default-testCompile</id>
+                    <phase>test-compile</phase>
+                    <goals>
+                        <goal>testCompile</goal>
+                    </goals>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </execution>
+            </executions>
                 <configuration>
                     <source>${targetJdk}</source>
                     <target>${targetJdk}</target>
@@ -83,18 +84,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>-Xms256m -Xmx756m</argLine>
-                    <excludes>
-                        <exclude>**/External*.java</exclude>
-                        <!-- Excluded because these take too long to run and require a lot of memory - see comprehensive profile -->
-                        <exclude>**/*PerformanceTest.java</exclude>
-                        <exclude>**/*ConcurrentTest.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  			</plugins>	 
+	  </build>
 </project>
