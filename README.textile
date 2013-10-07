@@ -1,4 +1,30 @@
-!http://thinkaurelius.github.io/titan/images/titan-logo.png!
+This is TitAn-droid.  All work is being done in the 0.3.2-deep branch, which is based on the 0.3.2 release (we are not using trunk).
+
+TitAn-droid is a fork of Titan that is configured to build and run on Android with minimal changes to the original Titan.  This fork is not very far along but is being used in a product in-development.  Graph databases like TitAn-droid make sense for almost all applications but they are especially appropriate for (surprise) data that is most naturally defined as a graph.  Even those with no sense of imagination can picture use-cases (social networks, wide-area networks, networks of all kinds, etc).
+
+This project is highly experimental.  An alternative Android port of Titan that may be more practical can be found "here":https://github.com/wuman/titan-android .
+
+TitAn-droid is an attempt to build and use Titan with as few changes to the original project as possible.  This is something of a mad-scientist type goal and so some 'forbidden' tools are used.  The overall approach of the project is this:
+# "Fetch the Android implementation of Berkeley DB":http://www.oracle.com/technetwork/products/berkeleydb/downloads/index.html from Oracle's web site.  This requires (free) registration with the site.  As of today, it is version 5.0.84.
+# Stick the Android version of Berkeley DB in your Maven repo as com.sleepycat:je-android:5.0.84 (or whatever version number you have).  For a local repo only, this would be
+** cd je-5.0.84/lib ; mvn install:install-file \
+  -Dfile=lib/je-android-5.0.84.jar \
+  -DgroupId=com.sleepycat \
+  -DartifactId=je-android \
+  -Dversion=5.0.84 \
+  -Dpackaging=jar \
+  -DgeneratePom=true
+# Build Titan from the root folder.  This only builds the source of Titan projects for titan-core and titan-berkeleyje.  The source is largely unchanged from the fork.
+** cd titan ; mvn clean install
+# Build TitAn-droid from the titan-core-dummy folder.
+** cd titan-core-dummy ; mvn clean install
+### Merge Titan and its dependencies into one jar.
+### Run JarJar Links on the resulting jar to retarget some of the APIs that aren't available on Android.  For example, one of the transitive dependencies of Titan is StAX, which exists in J2SE's rt.jar/classes.jar but not on Android.  Some clues to JarJar can be found "here":https://code.google.com/p/dalvik/wiki/JavaxPackages but this tool is not thoroughly documented so we are flying pretty crazy high at this point.
+### Carefully run Proguard on the result, which is rather large.  This is because the result of the entire compile is "too large for the Android SDK to handle":http://stackoverflow.com/questions/15209831/unable-to-execute-dex-method-id-not-in-0-0xffff-65536 .  Proguard should still be run by your own application-build (for releases, anyway).  This step is really about avoiding the aforementioned compiler limitation.
+# Include the subproject that does this, titan-core-dummy, in the final application.  Don't forget not to try to do database operations on your main UI thread!
+
+
+!https://github.com/thinkaurelius/titan/raw/master/doc/images/titan-logo.png!
 
 Titan is a highly scalable "graph database":http://en.wikipedia.org/wiki/Graph_database optimized for storing and querying large graphs with billions of vertices and edges distributed across a multi-machine cluster. Titan is a transactional database that can support "thousands of concurrent users":http://thinkaurelius.com/2012/08/06/titan-provides-real-time-big-graph-data/.
 
