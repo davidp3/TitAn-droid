@@ -1,4 +1,4 @@
-This is TitAn-droid.
+This is TitAn-droid.  All work is being done in the 0.3.2-deep branch, which is based on the 0.3.2 release (we are not using trunk).
 
 TitAn-droid is a fork of Titan that is configured to build and run on Android with minimal changes to the original Titan.  This fork is not very far along but is being used in a product in-development.  Graph databases like TitAn-droid make sense for almost all applications but they are especially appropriate for (surprise) data that is most naturally defined as a graph.  Even those with no sense of imagination can picture use-cases (social networks, wide-area networks, networks of all kinds, etc).
 
