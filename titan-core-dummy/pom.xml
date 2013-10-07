@@ -1,0 +1,217 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.deepdownstudios</groupId>
+	<artifactId>titan-core-dummy</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Titan-Core Dummy Project</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>openbeans</groupId>
+			<artifactId>openbeans</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.thinkaurelius.titan</groupId>
+			<artifactId>titan-core</artifactId>
+			<version>0.3.2</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.thinkaurelius.titan</groupId>
+			<artifactId>titan-berkeleyje</artifactId>
+			<version>0.3.2</version>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<descriptors>
+						<!--  In theory, this would not add the current product (which we havent built) to the jar.
+							In practice, it does nothing. -->
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>jarjar-maven-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jarjar</goal>
+						</goals>
+						<configuration>
+							<input>target/${project.build.finalName}-jar-with-dependencies.jar</input>
+							<output>target/${project.build.finalName}-jar-with-dependencies.jar</output>
+							<rules>
+								<rule>
+									<pattern>javax.xml.stream.**</pattern>
+									<result>com.deepdownstudios.stream.@1</result>
+								</rule>
+								<rule>
+									<pattern>java.beans.**</pattern>
+									<result>com.googlecode.openbeans.@1</result>
+								</rule>
+								<rule>	<!-- TODO: Remove.  Classes are in android.jar -->
+									<pattern>javax.xml.namespace.**</pattern>
+									<result>com.deepdownstudios.xml.namespace.@1</result>
+								</rule>
+								<keep>
+									<pattern>javax.annotation.**</pattern>
+								</keep>
+								<keep>
+									<pattern>com.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>com.*</pattern>
+								</keep>
+								<keep>
+									<pattern>org.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>org.*</pattern>
+								</keep>
+								<keep>
+									<pattern>edu.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>edu.*</pattern>
+								</keep>
+								<keep>
+									<pattern>EDU.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>EDU.*</pattern>
+								</keep>
+								<keep>
+									<pattern>cern.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>cern.*</pattern>
+								</keep>
+								<keep>
+									<pattern>corejava.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>corejava.*</pattern>
+								</keep>
+								<keep>
+									<pattern>hep.*.**</pattern>
+								</keep>
+								<keep>
+									<pattern>hep.*</pattern>
+								</keep>
+							</rules>
+							<overwrite>true</overwrite>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+      			<groupId>org.codehaus.plexus</groupId>
+      			<artifactId>plexus-archiver</artifactId>
+    			  <version>2.4.3</version>
+			    </dependency>
+ 				</dependencies>
+			</plugin>
+
+			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.6</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<options>
+						<option>-keep class com.sleepycat.** { *; }</option>
+						<option>-keep class org.apache.log4j.PatternLayout { *; }</option>
+						<option>-keep class org.apache.log4j.ConsoleAppender { *; }</option>
+						<option>-keep class
+							com.thinkaurelius.titan.** { *; } </option>
+						<option>-keep class
+							com.tinkerpop.** { *; } </option>
+						<option>-keep class com.googlecode.openbeans.** { *; } </option>
+						<option>-dontwarn com.vividsolutions.**</option>
+						<option>-dontwarn org.apache.commons.jxpath.**</option>
+						<option>-dontwarn javax.servlet.**</option>
+						<option>-dontwarn javax.jms.**</option>
+						<option>-dontwarn javax.mail.**</option>
+						<option>-dontwarn org.apache.tools.ant.taskdefs.Execute</option>
+						<option>-dontwarn org.apache.avalon.framework.logger.Logger</option>
+						<option>-dontwarn org.apache.commons.logging.impl.LogKitLogger</option>
+						<option>-dontwarn org.apache.commons.beanutils.**</option>	<!--  sketchy  -->
+						<option>-dontwarn javax.xml.namespace.**</option>
+						<option>-dontnote android.os.Process</option>
+						<option>-dontnote javax.mail.**</option>
+						<option>-dontnote javax.jmdns.**</option>
+						<option>-dontnote com.ibm.uvm.tools.DebugSupport</option>
+						<option>-dontnote COM.jrockit.**</option>
+						<option>-dontnote COM.newmonics.PercClassLoader.**</option>
+						<!-- Is this necessary? Only if Kryo reflection is actually used. -->
+						<option>-keepclasseswithmembers class
+							com.esotericsoftware.kryo.** {
+							&lt;init&gt;(com.esotericsoftware.kryo.Kryo,java.lang.Class); } </option>
+						<option>-keepclasseswithmembers class
+							com.esotericsoftware.kryo.** {
+							&lt;init&gt;(com.esotericsoftware.kryo.Kryo); } </option>
+						<option>-dontnote com.esotericsoftware.kryo.Kryo</option>
+						<option>-dontnote com.esotericsoftware.kryo.util.Util</option>
+
+						<option>-dontnote **</option>
+
+						<option>-dontoptimize</option>
+					</options>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+						<lib>${java.home}/lib/jce.jar</lib>
+					</libs>
+					<includeDependency>false</includeDependency>
+					<obfuscate>false</obfuscate>
+					<injar>${project.build.finalName}-jar-with-dependencies.jar</injar>
+					<outjar>${project.build.finalName}.jar</outjar>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<maxMemory>512m</maxMemory>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.proguard</groupId>
+						<artifactId>proguard-base</artifactId>
+						<version>4.10</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
