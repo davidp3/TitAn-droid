@@ -14,6 +14,7 @@ TitAn-droid is an attempt to build and use Titan with as few changes to the orig
   -Dversion=5.0.84 \
   -Dpackaging=jar \
   -DgeneratePom=true
+# Do similar for "OpenBeans":https://code.google.com/p/openbeans/ .  Use "openbeans" for both the groupId and artifactId.  Also use 0.0.1-SNAPSHOT as its version (TODO: Fix this).
 # Build Titan from the root folder.  This only builds the source of Titan projects for titan-core and titan-berkeleyje.  The source is largely unchanged from the fork.
 ** cd titan ; mvn clean install
 # Build TitAn-droid from the titan-core-dummy folder.
